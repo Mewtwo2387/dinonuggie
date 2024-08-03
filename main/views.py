@@ -33,7 +33,11 @@ def claim(request: HttpRequest) -> HttpResponse:
     if data.last_claim is not None and (datetime.now(timezone.utc) - data.last_claim).days < 1:
         return redirect('/')
 
-    data.count += 1
+    if data.last_claim is not None and (datetime.now(timezone.utc) - data.last_claim).days >= 2:
+        data.streak = 0
+    
+    data.count += 50 + data.streak * 25
+    data.streak += 1
     data.last_claim = datetime.now(timezone.utc)
     data.save()
 
